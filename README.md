@@ -1,36 +1,87 @@
-# GitPulse Explorer - Repository Comparison Tool
+# GitPulse Explorer
 
-GitPulse Explorer is a rebuild of GitHub's repository comparison workflow, allowing developers to directly evaluate metrics across multiple public repositories.
-
-##  Original Feature & Comparison
-Rebuilt Feature: GitHub Repository Comparison (`github.com/compare`)
-
-### Omissions from Original
-* **Full File Diff Viewer:** Excluded line-by-line git diffs to focus strictly on macro metadata and repository performance metrics.
-* **Pull Request Generation:** Excluded the "Create Pull Request" action sequence.
-
-### One Key Improvement
-* **Instant Inline Batch Validation & Contextual Retry:** Unlike GitHub's multi-step comparison navigation, GitPulse Explorer checks 2–3 repositories in parallel from a single input bar, surfaces exact API failures (e.g., 404 vs rate limits), and lets users retry or fix failed items inline without losing search state.
+GitPulse Explorer is a web application designed to evaluate and compare **2 to 3 public GitHub repositories** side-by-side in real time using the GitHub REST API.
 
 ---
 
-##  Keyboard Operation & Accessibility
-* **Full Form Navigation:** Navigate inputs, comparison buttons, and history tags using `Tab` and `Shift + Tab`.
-* **Action Execution:** Press `Enter` inside the input box to submit a search. Press `Enter` or `Space` on history tags to re-run past queries.
-* **Focus Management:** Automatic focus transfer to the "Try Again" button upon error states (`aria-live="polite"`).
+## System Architecture & Key Decisions
+
+- **Frontend:** Vanilla JavaScript (ES6+), HTML5, and CSS3.
+- **Design:** Built without frameworks such as React or Vue or bundlers such as Vite or Webpack, providing zero runtime dependencies and no build step.
+- **State Management:** Browser `localStorage` is used to store search history.
+- **API Integration:** Direct asynchronous `fetch` requests to the GitHub REST API v3 using `Promise.all` for parallel data retrieval.
 
 ---
 
-##  Failure States Handled
-1. **Invalid Input Count:** Triggers a validation alert if fewer than 2 or more than 3 repositories are supplied.
-2. **Missing / Private Repositories (HTTP 404):** Displays explicit error messages identifying which repository failed to load.
-3. **GitHub API Rate Limits (HTTP 403):** Displays rate-limit warnings when exceeding unauthenticated thresholds (60 requests/hour).
+## Prerequisites
 
----
+- **Node.js:** `v18.0.0` or higher
+- **npm:** `v9.0.0` or higher
+- **Modern Web Browser:** Chrome 115+, Firefox 115+, or Safari 16+
+- **Git:** `v2.30.0` or higher
 
-##  How to Run Locally
+Verify installations with:
 
-1. Clone or download this repository.
-2. Open `index.html` directly in any web browser, or serve it locally using a static server:
-   ```bash
-   npx serve .
+```bash
+node -v
+npm -v
+git --version
+Environment Variables
+
+The application works with GitHub's unauthenticated API rate limit of approximately 60 requests per hour per IP address.
+
+An optional GitHub Personal Access Token can be used to increase the rate limit.
+
+Variable	Required	Description
+GITHUB_TOKEN	Optional	GitHub Personal Access Token for authenticated API requests
+
+If using a token, configure it in script.js according to the project's implementation.
+
+Run Locally
+1. Clone the Repository
+git clone https://github.com/MobeenFatimaa/GitPulse-Explorer.git
+cd GitPulse-Explorer
+2. Start the Local Server
+
+Because the application uses modern JavaScript modules, serve it through a local web server:
+
+npx serve .
+3. Open the Application
+
+Navigate to:
+
+http://localhost:3000
+Usage & Verification
+Enter 2 or 3 repositories, such as facebook/react, vuejs/vue.
+Click Compare Directly or press Enter.
+Review repository metadata side-by-side.
+Use keyboard navigation with Tab, Shift + Tab, Enter, and Space.
+Test invalid repositories to verify the error state.
+Enter only one repository to verify input validation.
+Features
+Compare 2–3 GitHub repositories simultaneously.
+Real-time repository data retrieval.
+GitHub REST API integration.
+Repository statistics comparison.
+Search history using localStorage.
+Keyboard-accessible navigation.
+Input validation.
+Error handling for invalid or unavailable repositories.
+Responsive comparison interface.
+
+The comparison includes metadata such as:
+
+Stars
+Forks
+Open issues
+Primary language
+License
+Repository information
+Known Limitations
+Private Repositories: Unauthenticated requests cannot access private repositories.
+API Rate Limits: Unauthenticated requests are limited to approximately 60 requests per hour per IP.
+Repository Count: Direct comparison supports a minimum of 2 and maximum of 3 repositories.
+Historical Data: The application does not analyze individual commit diffs, pull requests, or detailed historical commit activity.
+Project Repository
+
+GitHub: https://github.com/MobeenFatimaa/GitPulse-Explorer
