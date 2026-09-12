@@ -1,268 +1,69 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GitPulse Explorer — Advanced Repository Discovery</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitPulse Explorer - Compare Repositories</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header class="app-header">
+    <div class="logo">⚡ GitPulse Explorer</div>
+    <nav class="nav-links">
+      <a href="#" class="active">Search Engine</a>
+      <a href="#">Platform Features</a>
+      <a href="#">Metrics</a>
+      <a href="#">Connect</a>
+    </nav>
+  </header>
 
-  <!-- Dev Sandbox Sticky Top Bar -->
-  <aside class="demo-bar" aria-label="Reviewer Sandbox Controls">
-    <div class="container demo-bar-content">
-      <span class="demo-title">⚡ Reviewer State Sandbox:</span>
-      <div class="demo-buttons">
-        <button type="button" id="btn-demo-loading" class="demo-btn">Simulate Loading</button>
-        <button type="button" id="btn-demo-empty" class="demo-btn">Simulate Empty (0 Results)</button>
-        <button type="button" id="btn-demo-error" class="demo-btn">Simulate API Error</button>
-      </div>
+  <main class="container">
+    <div class="tab-group" role="tablist" aria-label="Explorer Navigation">
+      <button role="tab" aria-selected="false" class="tab-btn">🔍 Search Repositories</button>
+      <button role="tab" aria-selected="false" class="tab-btn">👤 Analyze Profile</button>
+      <button role="tab" aria-selected="true" class="tab-btn active">⚔️ Compare Repos</button>
     </div>
-  </aside>
 
-  <!-- Interactive Top Navbar -->
-  <nav class="navbar">
-    <div class="container nav-content">
-      <a href="#home" class="brand-logo">
-        <span class="logo-icon">⚡</span>
-        <span class="logo-text">GitPulse Explorer</span>
-      </a>
+    <section class="search-card">
+      <form id="compare-form" onsubmit="return false;">
+        <label for="repo-input" class="sr-only">Enter repository full names</label>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="repo-input" 
+            placeholder="e.g. facebook/react, vuejs/vue"
+            aria-describedby="input-hint"
+          />
+          <button type="submit" id="compare-btn" class="btn-primary">Compare Directly</button>
+        </div>
+      </form>
 
-      <ul class="nav-links">
-        <li><a href="#search-section" class="nav-link active">Search Engine</a></li>
-        <li><a href="#features" class="nav-link">Platform Features</a></li>
-        <li><a href="#quick-stats" class="nav-link">Metrics</a></li>
-        <li><a href="#connect" class="nav-link">Connect</a></li>
-      </ul>
+      <p id="input-hint" class="hint-text">
+        Pro-tip: Enter 2 or 3 repository full names separated by commas to run direct comparison.
+      </p>
 
-      <div class="nav-actions">
-        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark mode">
-          <span class="theme-icon">🌙</span>
-        </button>
-        <a href="#search-section" class="nav-cta">Launch Search</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content Container -->
-  <main id="home">
-    <!-- Hero / Advanced Search Dashboard -->
-    <section id="search-section" class="hero-section container">
-      <div class="site-header">
-        <h1>GitHub Public Repository Search</h1>
-        <p>Search GitHub's real-time public repositories or use quick preset filters below.</p>
-      </div>
-
-      <!-- Advanced Discovery Control Dashboard -->
-      <div class="dashboard-card">
-        <form id="search-form" class="search-form" role="search">
-          <!-- Primary Input -->
-          <div class="input-group">
-            <label for="search-input" class="visually-hidden">Search repositories</label>
-            <input 
-              type="text" 
-              id="search-input" 
-              class="search-input" 
-              placeholder="Search repositories, topics, or type 'force-error'..." 
-              autocomplete="off"
-              required 
-            />
-            <button type="submit" class="search-button">Search Repos</button>
-          </div>
-
-          <!-- Helper Tip -->
-          <div class="helper-text">
-            Pro-tip: Type <code>force-error</code> to trigger an error state, or <code>xyzqwerty123456</code> for empty results.
-          </div>
-
-          <!-- Filter Control Panel -->
-          <div class="filter-panel">
-            <div class="filter-group">
-              <label for="filter-language">Language</label>
-              <select id="filter-language" class="filter-select">
-                <option value="">Any Language</option>
-                <option value="python">Python</option>
-                <option value="javascript">JavaScript</option>
-                <option value="typescript">TypeScript</option>
-                <option value="go">Go</option>
-                <option value="rust">Rust</option>
-                <option value="cpp">C++</option>
-                <option value="java">Java</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label for="filter-stars">Min Stars</label>
-              <select id="filter-stars" class="filter-select">
-                <option value="">Any Stars</option>
-                <option value="100">&gt;= 100 stars</option>
-                <option value="1000">&gt;= 1,000 stars</option>
-                <option value="5000">&gt;= 5,000 stars</option>
-                <option value="10000">&gt;= 10,000 stars</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label for="filter-forks">Min Forks</label>
-              <select id="filter-forks" class="filter-select">
-                <option value="">Any Forks</option>
-                <option value="50">&gt;= 50 forks</option>
-                <option value="200">&gt;= 200 forks</option>
-                <option value="1000">&gt;= 1,000 forks</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label for="filter-updated">Updated Within</label>
-              <select id="filter-updated" class="filter-select">
-                <option value="">Any Time</option>
-                <option value="24h">Last 24 Hours</option>
-                <option value="7d">Last 7 Days</option>
-                <option value="30d">Last 30 Days</option>
-                <option value="1y">Past Year</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label for="filter-license">License</label>
-              <select id="filter-license" class="filter-select">
-                <option value="">Any License</option>
-                <option value="mit">MIT</option>
-                <option value="apache-2.0">Apache 2.0</option>
-                <option value="gpl-3.0">GPL v3</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label for="filter-sort">Sort By</label>
-              <select id="filter-sort" class="filter-select">
-                <option value="">Best Match</option>
-                <option value="stars">Most Stars</option>
-                <option value="forks">Most Forks</option>
-                <option value="updated">Recently Updated</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Bottom Action Controls -->
-          <div class="form-footer">
-            <button type="button" id="clear-filters-btn" class="btn-clear-filters">Clear Filters</button>
-            <div class="history-container">
-              <span class="history-label">Search History:</span>
-              <div id="history-pills" class="history-pills">
-                <span class="no-history">None yet</span>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Execution Performance & Results Metric Banner -->
-      <div id="metrics-bar" class="metrics-bar hidden">
-        <div id="results-count" class="metric-count">0 repositories found</div>
-        <div id="execution-time" class="metric-timer">Search completed in 0.00s</div>
-      </div>
-
-      <!-- Dynamic Status Container (Loading, Empty, Error) -->
-      <div id="status-container" class="status-container" aria-live="polite"></div>
-
-      <!-- Results Display Grid -->
-      <section id="results-section" class="results-section" aria-label="Search results"></section>
-
-      <!-- Load More Button -->
-      <div id="pagination-container" class="pagination-container hidden">
-        <button type="button" id="load-more-btn" class="search-button btn-load-more">Load More Repositories</button>
-      </div>
-    </section>
-
-    <!-- Platform Features Section -->
-    <section id="features" class="features-section">
-      <div class="container">
-        <h2 class="section-title">Built for Robust Data Handling</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🔍</div>
-            <h3>Real-time Querying</h3>
-            <p>Direct integration with GitHub REST APIs for up-to-the-second repository metadata.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🛡️</div>
-            <h3>Explicit Error Diagnostics</h3>
-            <p>Actionable error boundaries stating specific failure reasons and offering immediate recovery steps.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Verified Empty States</h3>
-            <p>Zero-result queries are explicitly handled as successful operations rather than systemic failures.</p>
-          </div>
+      <div class="history-section">
+        <button id="clear-history" class="btn-secondary">Clear History</button>
+        <div class="history-tags">
+          <span class="label">Search History:</span>
+          <div id="tags-container" class="tags-container"></div>
         </div>
       </div>
     </section>
 
-    <!-- Quick Stats Section -->
-    <section id="quick-stats" class="stats-section container">
-      <div class="stats-grid">
-        <div class="stat-box">
-          <span class="stat-number">300M+</span>
-          <span class="stat-label">Public Repositories</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-number">100%</span>
-          <span class="stat-label">Accessible Feedback</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-number">&lt; 100ms</span>
-          <span class="stat-label">UI Response Time</span>
-        </div>
-      </div>
+    <!-- Error State Container -->
+    <section id="error-container" class="error-card hidden" aria-live="polite">
+      <span class="warning-icon" aria-hidden="true">⚠️</span>
+      <h2 class="error-title">Comparison Error</h2>
+      <p id="error-message" class="error-message"></p>
+      <button id="retry-btn" class="btn-primary">Try Again</button>
+    </section>
+
+    <!-- Success Output Container -->
+    <section id="results-container" class="results-grid hidden" aria-live="polite">
+      <!-- Dynamic comparison cards inserted via script.js -->
     </section>
   </main>
-
-  <!-- Complete Site Footer -->
-  <footer id="connect" class="site-footer">
-    <div class="container footer-content">
-      <div class="footer-brand">
-        <h3>GitPulse Explorer</h3>
-        <p>An accessible repository discovery and state-driven web application.</p>
-      </div>
-
-      <div class="footer-links">
-        <h4>Developer Profiles</h4>
-        <ul class="social-links">
-          <li>
-            <a href="https://github.com/MobeenFatimaa" target="_blank" rel="noopener noreferrer">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              GitHub
-            </a>
-          </li>
-          <li>
-            <a href="https://linkedin.com/in/mobeen-fatima" target="_blank" rel="noopener noreferrer">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-              LinkedIn
-            </a>
-          </li>
-          <li>
-            <a href="https://www.fiverr.com" target="_blank" rel="noopener noreferrer">
-              <span class="link-badge">F</span>
-              Fiverr
-            </a>
-          </li>
-          <li>
-            <a href="https://dev.to" target="_blank" rel="noopener noreferrer">
-              <span class="link-badge">&lt;/&gt;</span>
-              DevConnect
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="container footer-bottom">
-      <p>&copy; 2026 GitPulse Explorer. Designed for peak accessibility and operational state clarity.</p>
-    </div>
-  </footer>
 
   <script src="script.js"></script>
 </body>
